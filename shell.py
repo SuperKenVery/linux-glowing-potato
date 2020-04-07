@@ -114,30 +114,35 @@ def _allhomework(*argv):
     '''
     path=wechatHelper.path
     homework=''
-    for i in listen.allFolders:
-        recname=os.path.join(path,i,'chat.txt')
-        if os.path.isfile(recname):
-            with open(recname) as f:
-                homework+=i+':\n'+f.read()+'\n'
-    if 'no-sr' in argv:
-        lines=homework.split('\n')
-        diff=0
-        status=''
-        for i in range(len(lines)):
-            if lines[i+diff][0:3]=='科代表':
-                status=1
-            elif lines[i+diff][0:2]=='老师':
-                status=0
-            if status==1:
-                del lines[i+diff]
-                diff-=1
-        homework='\n'.join(lines)
-    if not 'gui' in argv:
-        print(homework)
+    if 'edit' in argv:
+        for i in listen.allFolders:
+            name=os.path.join(path,i,'chat.txt')
+            os.system("gedit %s >> /dev/null &"%name)
     else:
-        with open("homework.txt",'w') as f:
-            f.write(homework)
-        os.system('xdg-open "homework.txt"')
+        for i in listen.allFolders:
+            recname=os.path.join(path,i,'chat.txt')
+            if os.path.isfile(recname):
+                with open(recname) as f:
+                    homework+=i+':\n'+f.read()+'\n'
+        if '--no-sr' in argv:
+            lines=homework.split('\n')
+            diff=0
+            status=''
+            for i in range(len(lines)):
+                if lines[i+diff][0:3]=='科代表':
+                    status=1
+                elif lines[i+diff][0:2]=='老师':
+                    status=0
+                if status==1:
+                    del lines[i+diff]
+                    diff-=1
+            homework='\n'.join(lines)
+        if not '--gui' in argv:
+            print(homework)
+        else:
+            with open("homework.txt",'w') as f:
+                f.write(homework)
+            os.system('xdg-open "homework.txt"')
 
 commands={
     'help': lambda:printLines(commands.keys()),
