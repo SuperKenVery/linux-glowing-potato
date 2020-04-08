@@ -115,7 +115,7 @@ def register():
         msg['Text']=emojiFilter.sub('',msg['Text'])
         if not mute and (sender not in blacklist) and (group not in blacklist):
             notify(sender+'\t('+group+')',msg['Text'])
-        history.append(group[:3]+'\t'+sender+':'+msg['Text'].replace('\n',' '))
+        history.append(group[:3]+'\t'+sender+':'+msg['Text'])
         if sender in classroom.teachers.keys():
             path=os.path.join(path,classroom.teachers[sender])
             with open(os.path.join(path,'chat.txt'),'ab') as f:
