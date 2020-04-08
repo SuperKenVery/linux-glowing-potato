@@ -132,7 +132,7 @@ def register():
         msg['Text']=emojiFilter.sub('',msg['Text'])
         if not notify and (sender not in blacklist): notify(sender,msg['Text'])
         a=sender+':'+msg['Text'].replace('\n','')
-        history.append(sender+':'+msg['Text'].replace('\n',''))
+        history.append(sender+':'+msg['Text'])
 
     @itchat.msg_register([itchat.content.ATTACHMENT,itchat.content.PICTURE],isFriendChat=True)
     def gotSelfAttachment(msg):
