@@ -109,6 +109,7 @@ def _folder(every=None):
 def _allhomework(*argv):
     '''
         argv:
+        edit    edit all chat.txt using gedit
         gui     show homework in gui, otherwise in cli
         no-sr   no subject representative 
     '''
@@ -174,6 +175,13 @@ def parse(cmd):
     inPara=False
     direct=False
     for i in cmd:
+        if direct:
+            x[-1]+=i
+            direct=not direct
+            continue
+        if i=='\\':
+            direct=True
+            continue
         if i in ['"',"'"]:
             inPara=not inPara
             continue
