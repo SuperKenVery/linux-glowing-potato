@@ -115,7 +115,7 @@ def _allhomework(*argv):
     '''
     path=wechatHelper.path
     homework=''
-    if 'edit' in argv:
+    if '--edit' in argv:
         for i in listen.allFolders:
             name=os.path.join(path,i,'chat.txt')
             os.system("gedit %s >> /dev/null &"%name)
@@ -201,7 +201,7 @@ def run(debug=False):
     os.popen("clear")
     while True:
         try:
-            x=termcolor.colored('>>>','green',attrs=['bold','blink'])
+            x=termcolor.colored('>>>','green',attrs=['bold'])
             c=parse(input(x).strip())
             commands[c[0]](*c[1:])
         except KeyboardInterrupt:
@@ -219,4 +219,8 @@ def run(debug=False):
 if __name__=='__main__':
     print("Please run wechatHelper.py")
     import wechatHelper,listen
-    _allhomework('gui','no-sr')
+    #_allhomework('gui','no-sr')
+    p=parse("homework --no-sr --gui")
+    print(p)
+    commands[p[0]](*p[1:])
+
