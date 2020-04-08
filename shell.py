@@ -99,11 +99,11 @@ def _send(*filenames):
             itchat.send(filename,toUserName='filehelper')
 def _folder(every=None):
     if every==None:
-        os.popen('nautilus '+wechatHelper.path)
+        os.popen('nautilus '+wechatHelper.path+' >> /dev/null &')
     elif every=='all':
         for i in listen.allFolders:
             if os.listdir(i)!=[]:
-                os.popen('nautilus '+os.path.join(wechatHelper.path,i))
+                os.popen('nautilus '+os.path.join(wechatHelper.path,i)+' >> /dev/null &')
     else:
         print("Unknown operation "+str(every))
 def _allhomework(*argv):
@@ -143,7 +143,7 @@ def _allhomework(*argv):
         else:
             with open("homework.txt",'w') as f:
                 f.write(homework)
-            os.system('xdg-open "homework.txt"')
+            os.system('xdg-open "homework.txt" >> /dev/null &')
 
 commands={
     'help': lambda:printLines(commands.keys()),
