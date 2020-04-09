@@ -97,15 +97,16 @@ def _send(*filenames):
             itchat.send_file(filename,toUserName='filehelper')
         else:
             itchat.send(filename,toUserName='filehelper')
-def _folder(every=None):
-    if every==None:
-        os.popen('nautilus '+wechatHelper.path+' >> /dev/null &')
-    elif every=='all':
-        for i in listen.allFolders:
-            if os.listdir(i)!=[]:
-                os.popen('nautilus '+os.path.join(wechatHelper.path,i)+' >> /dev/null &')
+def _folder(*argv):
+    if '--gui' in argv:
+        if not '--all' in argv:
+            os.popen('nautilus '+wechatHelper.path+' >> /dev/null &')
+        else:
+            for i in listen.allFolders:
+                if os.listdir(i)!=[]:
+                    os.popen('nautilus '+os.path.join(wechatHelper.path,i)+' >> /dev/null &')
     else:
-        print("Unknown operation "+str(every))
+        os.system('ranger "%s"'%wechatHelper.path)
 def _allhomework(*argv):
     '''
         argv:
