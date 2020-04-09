@@ -51,6 +51,10 @@ def processFile(filename,path,getter=None,always=False):
             processFile(filenames,path,getters,always)
         else:
             pass
+        fullname=os.path.join(path,filename)
+        guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
+        if (not '???' in guess) and (end is not guess):
+            os.rename(fullname,os.path.join(path,name+'.'+guess))
     working-=1
 
 if __name__=='__main__':

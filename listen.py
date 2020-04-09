@@ -71,12 +71,6 @@ def register():
         sender=emojiFilter.sub('',msg['ActualNickName'])
         group=emojiFilter.sub('',msg['User']['NickName'])
         path=wechatHelper.path
-        fullname=os.path.join(path,msg['FileName'])
-        guess=os.popen('file --extension "%s"'%fullname).read()
-        extension=guess.split(': ')[1].split('/')[0]
-        ori=convert.parseFileName(msg['FileName'])
-        if not '???' in extension and extension!=ori[1]:
-            os.rename(fullname,os.path.join(path,ori[0]+extension))
         if not mute and (sender not in blacklist) and (group not in blacklist):
             notify('收到%s'%msg['FileName'],'来自%s'%sender)
         if sender in classroom.teachers.keys():
