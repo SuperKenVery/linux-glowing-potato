@@ -1,6 +1,6 @@
 import zipfile,os
 working=0
-#def notiry   injected from listen
+#def notify   injected from listen
 def parseFileName(filename):
     splitted=filename.split('.')
     name=''
@@ -34,6 +34,12 @@ def processFile(filename,path,getter=None,always=False):
             data=download(getter)
             with open(os.path.join(path,filename),'wb') as f:
                 f.write(data)
+        fullname=os.path.join(path,filename)
+        guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
+        if (not '???' in guess) and (end is not guess):
+            os.rename(fullname,os.path.join(path,name+'.'+guess))
+            filename=name+'.'+guess
+            end=guess
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
             os.popen('libreoffice --convert-to odt "%s" --outdir "%s" >> /dev/null'%(fullname,path))
@@ -51,11 +57,7 @@ def processFile(filename,path,getter=None,always=False):
             processFile(filenames,path,getters,always)
         else:
             pass
-        fullname=os.path.join(path,filename)
-        guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
-        if (not '???' in guess) and (end is not guess):
-            os.rename(fullname,os.path.join(path,name+'.'+guess))
-    working-=1
+            working-=1
 
 if __name__=='__main__':
     from listen import notify
