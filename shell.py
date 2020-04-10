@@ -8,6 +8,7 @@ def lessshow(msg):
         x=x[:-1]
         lessshow(x)
     else:
+        msg=str(msg)
         cmd='echo "%s" | less'%msg.replace('"','\\"')
         os.system(cmd)
 def _stopNotify(t=None):
@@ -31,7 +32,7 @@ def _reconnect():
     itchat.logout()
 def _history(history,every):
     if every==False:
-        lessshow(history)
+        lessshow(str(history))
     elif every=='all':
         lessshow(history.printall)
     else:
