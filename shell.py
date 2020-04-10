@@ -1,11 +1,15 @@
 import pdb,threading,time,os,convert,datetime,termcolor
 loggingout=False
-def printLines(l):
-    x=''
-    for i in l:
-        x+=i+'\n'
-    x=x[:-1]
-    print(x)
+def lessshow(msg):
+    if isinstance(msg,list):
+        x=''
+        for i in msg:
+            x+=i+'\n'
+        x=x[:-1]
+        lessshow(x)
+    else:
+        cmd='echo "%s" | less'%msg.replace('"','\\"')
+        os.system(cmd)
 def _stopNotify(t=None):
     listen.mute=True
     if t:
@@ -27,9 +31,9 @@ def _reconnect():
     itchat.logout()
 def _history(history,every):
     if every==False:
-        print(history)
+        lessshow(history)
     elif every=='all':
-        print(history.printall)
+        lessshow(history.printall)
     else:
         print("Unknown operation "+str(every))
 mo,c,m,e,p,ch,b,h,po,g,s,cl,mu,a,ps,it,pe="早读 语文 数学 英语 物理 化学 生物 历史 政治 地理 自习 班会 音乐 美术 心理 信息 体育".split(' ')
@@ -140,14 +144,14 @@ def _allhomework(*argv):
                     diff-=1
             homework='\n'.join(lines)
         if not '--gui' in argv:
-            print(homework)
+            lessshow(homework)
         else:
             with open("homework.txt",'w') as f:
                 f.write(homework)
             os.system('xdg-open "homework.txt" >> /dev/null &')
 
 commands={
-    'help': lambda:printLines(commands.keys()),
+    'help': lambda:lessshow([str(i) for i in commands.keys()]),
     'send':_send,
     'folder':_folder,
     'history':lambda every=False:_history(history,every),
@@ -219,9 +223,6 @@ def run(debug=False):
 
 if __name__=='__main__':
     print("Please run wechatHelper.py")
-    import wechatHelper,listen
-    #_allhomework('gui','no-sr')
-    p=parse("homework --no-sr --gui")
-    print(p)
-    commands[p[0]](*p[1:])
-
+    lessshow('''
+        A long text ' to " test less\\ show
+    ''')
