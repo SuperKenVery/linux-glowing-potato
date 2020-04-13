@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import itchat,os,sys,datetime
 
 inFolder='grab'
@@ -19,6 +20,7 @@ path=os.path.join(sys.path[0],inFolder,todayFolder)
 if not os.path.isdir(path):
     os.makedirs(path)
 os.chdir(path)
+
 
 if __name__=='__main__':
     import shell,convert,listen
