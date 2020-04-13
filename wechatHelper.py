@@ -14,7 +14,7 @@ if toweek in [5,6]:#Saturday, Sunday. Weekday is 0-based.
         if m<=0:
             m+=12
     today=datetime.date(y,m,d)
-todayFolder=str(datetime.date.today())
+todayFolder=str(today)
 path=os.path.join(sys.path[0],inFolder,todayFolder)
 
 if not os.path.isdir(path):
