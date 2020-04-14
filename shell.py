@@ -205,17 +205,19 @@ def run(debug=False):
         while itchat.loggedIn==False: time.sleep(0.01)
     time.sleep(0.01)
     os.popen("clear")
+    x=termcolor.colored('>>>','green',attrs=['bold'])
     while True:
         try:
-            x=termcolor.colored('>>>','green',attrs=['bold'])
-            c=parse(input(x).strip())
+            user_input=input(x)
+            c=parse(user_input.strip())
             commands[c[0]](*c[1:])
         except KeyboardInterrupt:
             print('Type "exit" to quit. (Doesn\'t work all the time)')
         except TypeError as e:
             print("Argument Error. %s"%str(e))
         except KeyError:
-            print("Command not found: %s"%c[0])
+            ret=os.popen(user_input)
+            print(ret.read())
         except SystemExit:
             exit()
         except BaseException as e:

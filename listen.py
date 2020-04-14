@@ -40,7 +40,7 @@ def notify(title,body=''):
     os.system('notify-send -a "WeChat Helper" "%s" "%s"'%(title,body))
 history=chatHistory()
 mute=False
-errorTimes=0
+errorProcess=0
 lastError=0
 
 allFolders=set(classroom.teachers.values())|set(classroom.sr.values())
@@ -51,16 +51,18 @@ emojiFilter=re.compile(u'[\U00010000-\U0010ffff]')
 
 
 def connectionError(e,*argv):
-    global errorTimes,lastError
-    errorTimes+=1
+    global errorProcess,lastError
+    errorProcess+=1
     t=time.time()
     if t-lastError<=5000:
         notify("网络错误","")
     lastError=t
-    '''status=itchat.check_login()
-    if status not in '200 201' and not shell.loggingout:
-        itchat.logout()
-        listen()'''
+    if errorProcess<=5:
+        status=itchat.check_login()
+        if status not in ['200','201'] and not shell.loggingout:
+            itchat.logout()
+            listen()
+    errorProcess-=1
 
 def register():
     try:    itchat.error_register(True)(connectionError)
