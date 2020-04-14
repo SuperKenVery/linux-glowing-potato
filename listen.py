@@ -146,7 +146,7 @@ def listen():
             itchat.logout()
             listen()
     itchat.auto_login(hotReload=True,
-                      enableCmdQR=False,
+                      enableCmdQR=True,
                       statusStorageDir='../itchat.pkl',
                       loginCallback=setLoggedIn,
                       exitCallback=exitcallback
