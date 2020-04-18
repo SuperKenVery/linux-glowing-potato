@@ -40,8 +40,6 @@ def notify(title,body=''):
     os.system('notify-send -a "WeChat Helper" "%s" "%s"'%(title,body))
 history=chatHistory()
 mute=False
-errorProcess=0
-lastError=0
 
 allFolders=set(classroom.teachers.values())|set(classroom.sr.values())
 for i in allFolders:
@@ -51,18 +49,7 @@ emojiFilter=re.compile(u'[\U00010000-\U0010ffff]')
 
 
 def connectionError(e,*argv):
-    global errorProcess,lastError
-    errorProcess+=1
-    t=time.time()
-    if t-lastError<=5000:
-        notify("网络错误","")
-    lastError=t
-    if errorProcess<=5:
-        status=itchat.check_login()
-        if status not in ['200','201'] and not shell.loggingout:
-            itchat.logout()
-            listen()
-    errorProcess-=1
+    itchat.logout()
 
 def register():
     try:    itchat.error_register(True)(connectionError)
@@ -141,17 +128,15 @@ def listen():
     def setLoggedIn():
         itchat.loggedIn=True
     def exitcallback():
-        status=itchat.check_login()
-        if status not in '200 201' and not shell.loggingout:
-            itchat.logout()
-            listen()
-    itchat.auto_login(hotReload=True,
-                      enableCmdQR=False,
-                      statusStorageDir='../itchat.pkl',
-                      loginCallback=setLoggedIn,
-                      exitCallback=exitcallback
-                      )
-    itchat.run()
+        itchat.logout()
+    while True:
+        itchat.auto_login(hotReload=True,
+                        enableCmdQR=False,
+                        statusStorageDir='../itchat.pkl',
+                        loginCallback=setLoggedIn,
+                        exitCallback=exitcallback
+                        )
+        itchat.run()
 
     
 listenThread=threading.Thread(target=listen)

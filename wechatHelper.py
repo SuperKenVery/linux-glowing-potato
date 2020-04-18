@@ -1,5 +1,9 @@
 #!/usr/bin/python3
-import itchat,os,sys,datetime
+try:
+    import itchat,os,sys,datetime
+except ModuleNotFoundError:
+    print("No itchat installed. ")
+    print("Use 'pip3 install itchat' to install it. ")
 
 inFolder='grab'
 today=datetime.date.today()
