@@ -19,7 +19,14 @@ def download(downfunc,tryTimes=10,fail=lambda *argv,**argvs:notify("Download Fai
         else:
             return data
 
-
+def rename(path,name,end):
+    fullname=os.path.join(path,name+'.'+end)
+    guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
+    if (not '???' in guess) and (end is not guess):
+        os.rename(fullname,os.path.join(path,name+'.'+guess))
+        filename=name+'.'+guess
+        end=guess
+    return filename,end
 def processFile(filename,path,getter=None,always=False):
     global working
     if type(filename)==list:
@@ -29,17 +36,13 @@ def processFile(filename,path,getter=None,always=False):
     if filename=='': return
     working+=1
     name,end=parseFileName(filename)
+    filename,end=rename(path,name,end)
     if always==True or (end in ['doc','docx','pdf','zip','ppt','pptx','xls','xlsx','mp3','png','jpg','jpeg']):
         if hasattr(getter,'__call__'):
             data=download(getter)
             with open(os.path.join(path,filename),'wb') as f:
                 f.write(data)
-        fullname=os.path.join(path,filename)
-        guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
-        if (not '???' in guess) and (end is not guess):
-            os.rename(fullname,os.path.join(path,name+'.'+guess))
-            filename=name+'.'+guess
-            end=guess
+        
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
             os.popen('libreoffice --convert-to odt "%s" --outdir "%s" >> /dev/null'%(fullname,path))
@@ -63,4 +66,15 @@ if __name__=='__main__':
     from listen import notify
     import time
     print("Please run wechatHelper.py")
-    processFile("/home/ken/Desktop/grab/2020-04-03/英语/19-20学年第二学期高一英语答案.docx","/home/ken/Desktop/grab/2020-04-03/英语")
+    path='/home/ken/Desktop/grab/2020-04-20/'
+    name='英语/200420-110013'
+    end='png'
+    fullname=os.path.join(path,name+'.'+end)
+    print(fullname)
+    guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
+    print(guess)
+    if (not '???' in guess) and (end is not guess):
+        print("rename %s to %s"%(fullname,os.path.join(path,name+'.'+guess)))
+        os.rename(fullname,os.path.join(path,name+'.'+guess))
+        filename=name+'.'+guess
+        end=guess
