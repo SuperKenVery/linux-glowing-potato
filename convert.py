@@ -21,6 +21,7 @@ def download(downfunc,tryTimes=10,fail=lambda *argv,**argvs:notify("Download Fai
 
 def rename(path,name,end):
     fullname=os.path.join(path,name+'.'+end)
+    filename=name+'.'+end
     guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
     if (not '???' in guess) and (end is not guess):
         os.rename(fullname,os.path.join(path,name+'.'+guess))
@@ -36,13 +37,12 @@ def processFile(filename,path,getter=None,always=False):
     if filename=='': return
     working+=1
     name,end=parseFileName(filename)
-    filename,end=rename(path,name,end)
     if always==True or (end in ['doc','docx','pdf','zip','ppt','pptx','xls','xlsx','mp3','png','jpg','jpeg']):
         if hasattr(getter,'__call__'):
             data=download(getter)
             with open(os.path.join(path,filename),'wb') as f:
                 f.write(data)
-        
+        filename,end=rename(path,name,end)
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
             os.popen('libreoffice --convert-to odt "%s" --outdir "%s" >> /dev/null'%(fullname,path))
