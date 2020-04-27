@@ -37,7 +37,7 @@ def processFile(filename,path,getter=None,always=False):
     if filename=='': return
     working+=1
     name,end=parseFileName(filename)
-    if always==True or (end in ['doc','docx','pdf','zip','ppt','pptx','xls','xlsx','mp3','png','jpg','jpeg']):
+    if always==True or (end in ['doc','docx','pdf','zip','ppt','pptx','xls','xlsx','mp3','png','jpg','jpeg','rar']):
         if hasattr(getter,'__call__'):
             data=download(getter)
             with open(os.path.join(path,filename),'wb') as f:
@@ -60,7 +60,7 @@ def processFile(filename,path,getter=None,always=False):
             processFile(filenames,path,getters,always)
         else:
             pass
-            working-=1
+    working-=1
 
 if __name__=='__main__':
     from listen import notify

@@ -6,7 +6,7 @@ except ModuleNotFoundError:
     print("Use 'pip3 install itchat' to install it. ")
     exit()
 
-inFolder=os.path.expanduser('~/School/Materials&Homework/')
+inFolder=os.path.expanduser('~/School/Materials/')
 today=datetime.date.today()
 toweek=today.weekday()
 if toweek in [5,6]:#Saturday, Sunday. Weekday is 0-based. 
