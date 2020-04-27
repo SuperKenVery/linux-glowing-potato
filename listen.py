@@ -121,6 +121,7 @@ def register():
     def gotSelfAttachment(msg):
         if not 'NickName' in msg['User'].keys():
             notify('Got SELF File',msg['FileName'])
+            while convert.working>0: time.sleep(0.01)
             convert.processFile(msg['FileName'],wechatHelper.path,msg['Text'],always=True)
             return None
 
