@@ -4,6 +4,7 @@ try:
 except ModuleNotFoundError:
     print("No itchat installed. ")
     print("Use 'pip3 install itchat' to install it. ")
+    exit()
 
 inFolder=os.path.expanduser('~/School/Materials&Homework/')
 today=datetime.date.today()
