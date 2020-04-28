@@ -85,7 +85,7 @@ def register():
         with open(n,'wb') as f:
             f.write(convert.download(msg['Text']))
         if not mute and (group not in blacklist) and (sender not in blacklist):
-            subprocess.Popen(['xdg-open',%n],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            subprocess.Popen(['xdg-open',n],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         history.append(group[:3]+'\t'+sender+' 发了一张图片\t存储在'+n)
 
     @itchat.msg_register(itchat.content.TEXT,isGroupChat=True)
