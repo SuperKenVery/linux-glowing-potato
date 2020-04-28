@@ -21,7 +21,8 @@ def download(downfunc,tryTimes=10,fail=lambda *argv,**argvs:notify("Download Fai
 def rename(path,name,end):
     fullname=os.path.join(path,name+'.'+end)
     filename=name+'.'+end
-    guess=subprocess.Popen(['file','--extension','"%s"'%fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE).read()
+    filecmd=subprocess.Popen(['file','--extension','%s'%fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    guess=filecmd.stdout.read().decode().split(': ')[1].split('/')[0]
     if (not '???' in guess) and (end is not guess):
         os.rename(fullname,os.path.join(path,name+'.'+guess))
         filename=name+'.'+guess
@@ -42,11 +43,11 @@ def processFile(filename,path,getter=None,always=False):
         filename,end=rename(path,name,end)
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
-            subprocess.Popen(['libreoffice','--convert-to','odt','"%s"'%fullname,'--outdir','"%s"'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            subprocess.Popen(['libreoffice','--convert-to','odt','%s'%fullname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             odtname=os.path.join(path,parseFileName(filename)[0]+'.odt')
             while not os.path.isfile(odtname): time.sleep(0.01)
             os.remove(fullname)
-            subprocess.Popen(['libreoffice','--convert-to','pdf','"%s"'%odtname,'--outdir','"%s"'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            subprocess.Popen(['libreoffice','--convert-to','pdf','%s'%odtname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             pdfname=os.path.join(path,parseFileName(filename)[0]+'.pdf')
         elif end=='zip':
             manager=zipfile.ZipFile(os.path.join(path,filename))
@@ -60,16 +61,17 @@ def processFile(filename,path,getter=None,always=False):
 if __name__=='__main__':
     from listen import notify
     import time
+    import subprocess
     print("Please run wechatHelper.py")
-    path='/home/ken/Desktop/grab/2020-04-20/'
-    name='英语/200420-110013'
+    path='/home/xu/School/Materials/2020-04-28/'
+    name='QR'
     end='png'
     fullname=os.path.join(path,name+'.'+end)
-    print(fullname)
-    guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
+    filename=name+'.'+end
+    filecmd=subprocess.Popen(['file','--extension','%s'%fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    print(' '.join(['file','--extension','"%s"'%fullname]))
+    r=filecmd.stdout.read().decode()
+    guess=r.split(': ')[1].split('/')[0]
     print(guess)
-    if (not '???' in guess) and (end is not guess):
-        print("rename %s to %s"%(fullname,os.path.join(path,name+'.'+guess)))
-        os.rename(fullname,os.path.join(path,name+'.'+guess))
-        filename=name+'.'+guess
-        end=guess
+    print(r)
+    print(fullname)

@@ -1,6 +1,5 @@
 import pdb,threading,time,os,convert,datetime,termcolor
 loggingout=False
-ranger=None
 def lessshow(msg):
     if isinstance(msg,list):
         x=''
@@ -106,18 +105,13 @@ def _send(*filenames):
 def _folder(*argv):
     if '--gui' in argv:
         if not '--all' in argv:
-            subprocess.Popen(['nautilus','"%s"'%wechatHelper.path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            subprocess.Popen(['nautilus',wechatHelper.path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         else:
             for i in listen.allFolders:
                 if os.listdir(i)!=[]:
-                    subprocess.Popen(['nautilus','"%s"'%os.path.join(wechatHelper.path,i)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+                    subprocess.Popen(['nautilus',os.path.join(wechatHelper.path,i)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     else:
-        global ranger
-        if ranger:
-            ranger.main()
-        else:
-            import ranger
-            ranger.main()
+        os.system("ranger")
 def _allhomework(*argv):
     '''
         argv:

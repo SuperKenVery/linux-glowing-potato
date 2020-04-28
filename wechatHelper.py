@@ -4,7 +4,8 @@ try:
 except ModuleNotFoundError as e:
     print("Some required modules arn't installed. ")
     print("Use 'pip3 install <module name>' to install it. ")
-    print(str(e))
+    print("Required modules: itchat, os, sys, datetime, subprocess")
+    print("(Only itchat doesn't come with python)")
     exit()
 
 inFolder=os.path.expanduser('~/School/Materials/')
