@@ -21,7 +21,7 @@ def download(downfunc,tryTimes=10,fail=lambda *argv,**argvs:notify("Download Fai
 def rename(path,name,end):
     fullname=os.path.join(path,name+'.'+end)
     filename=name+'.'+end
-    guess=os.popen('file --extension "%s"'%fullname).read().split(': ')[1].split('/')[0]
+    guess=subprocess.Popen(['file','--extension','"%s"'%fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE).read()
     if (not '???' in guess) and (end is not guess):
         os.rename(fullname,os.path.join(path,name+'.'+guess))
         filename=name+'.'+guess
@@ -42,13 +42,12 @@ def processFile(filename,path,getter=None,always=False):
         filename,end=rename(path,name,end)
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
-            os.popen('libreoffice --convert-to odt "%s" --outdir "%s" >> /dev/null'%(fullname,path))
+            subprocess.Popen(['libreoffice','--convert-to','odt','"%s"'%fullname,'--outdir','"%s"'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             odtname=os.path.join(path,parseFileName(filename)[0]+'.odt')
             while not os.path.isfile(odtname): time.sleep(0.01)
             os.remove(fullname)
-            os.popen('libreoffice --convert-to pdf "%s" --outdir "%s" >> /dev/null'%(odtname,path))
+            subprocess.Popen(['libreoffice','--convert-to','pdf','"%s"'%odtname,'--outdir','"%s"'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             pdfname=os.path.join(path,parseFileName(filename)[0]+'.pdf')
-            while not os.path.isfile(pdfname): time.sleep(0.01)
         elif end=='zip':
             manager=zipfile.ZipFile(os.path.join(path,filename))
             fullnames=manager.namelist()

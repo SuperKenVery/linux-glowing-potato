@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 try:
-    import itchat,os,sys,datetime
-except ModuleNotFoundError:
-    print("No itchat installed. ")
-    print("Use 'pip3 install itchat' to install it. ")
+    import itchat,os,sys,datetime,subprocess
+except ModuleNotFoundError as e:
+    print("Some required modules arn't installed. ")
+    print("Use 'pip3 install <module name>' to install it. ")
+    print(str(e))
     exit()
 
 inFolder=os.path.expanduser('~/School/Materials/')
@@ -34,15 +35,18 @@ if __name__=='__main__':
 
     listen.itchat       =itchat
     listen.shell        =shell
+    listen.subprocess   =subprocess
     listen.register()
     listen.start()
 
     convert.notify      =listen.notify
     convert.time        =shell.time
+    convert.subprocess  =subprocess
 
     shell.notify        =listen.notify
     shell.itchat        =itchat
     shell.history       =listen.history
     shell.listen        =listen
     shell.wechatHelper  =listen.wechatHelper
+    shell.subprocess    =subprocess
     shell.run()
