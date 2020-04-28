@@ -66,7 +66,6 @@ def register():
             path=os.path.join(path,classroom.teachers[sender])
         elif sender in classroom.sr.keys():
             path=os.path.join(path,classroom.sr[sender])
-        while convert.working>0: time.sleep(0.01)
         convert.processFile(filename=msg['FileName'],path=path,getter=msg['Text'])
         return None
 
@@ -121,7 +120,6 @@ def register():
     def gotSelfAttachment(msg):
         if not 'NickName' in msg['User'].keys():
             notify('Got SELF File',msg['FileName'])
-            while convert.working>0: time.sleep(0.01)
             convert.processFile(msg['FileName'],wechatHelper.path,msg['Text'],always=True)
             return None
 

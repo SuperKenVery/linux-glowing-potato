@@ -1,5 +1,4 @@
 import zipfile,os
-working=0
 #def notify   injected from listen
 def parseFileName(filename):
     splitted=filename.split('.')
@@ -29,13 +28,11 @@ def rename(path,name,end):
         end=guess
     return filename,end
 def processFile(filename,path,getter=None,always=False):
-    global working
     if type(filename)==list:
         for f,g in zip(filename,getter):
             processFile(f,path,g,always)
         return
     if filename=='': return
-    working+=1
     name,end=parseFileName(filename)
     if always==True or (end in ['doc','docx','pdf','zip','ppt','pptx','xls','xlsx','mp3','png','jpg','jpeg','rar']):
         if hasattr(getter,'__call__'):
@@ -60,7 +57,6 @@ def processFile(filename,path,getter=None,always=False):
             processFile(filenames,path,getters,always)
         else:
             pass
-    working-=1
 
 if __name__=='__main__':
     from listen import notify
