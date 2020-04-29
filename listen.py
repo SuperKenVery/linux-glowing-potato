@@ -128,7 +128,7 @@ def listen():
         itchat.loggedIn=True
     def exitcallback():
         itchat.logout()
-    while True:
+    while not shell.loggingout:
         itchat.auto_login(hotReload=True,
                         enableCmdQR=False,
                         statusStorageDir='../itchat.pkl',
