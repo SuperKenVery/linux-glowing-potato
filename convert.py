@@ -21,7 +21,7 @@ def download(downfunc,tryTimes=10,fail=lambda *argv,**argvs:notify("Download Fai
 def rename(path,name,end):
     fullname=os.path.join(path,name+'.'+end)
     filename=name+'.'+end
-    filecmd=subprocess.Popen(['file','--extension','%s'%fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    filecmd=subprocess.Popen(['file','--extension',fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     guess=filecmd.stdout.read().decode().split(': ')[1].split('/')[0]
     if (not '???' in guess) and (end is not guess):
         os.rename(fullname,os.path.join(path,name+'.'+guess))
