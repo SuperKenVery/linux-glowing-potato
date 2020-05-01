@@ -43,12 +43,10 @@ def processFile(filename,path,getter=None,always=False):
         filename,end=rename(path,name,end)
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
-            a=subprocess.Popen(['libreoffice','--convert-to','odt','%s'%fullname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            subprocess.Popen(['libreoffice','--convert-to','odt',fullname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).wait()
             odtname=os.path.join(path,parseFileName(filename)[0]+'.odt')
-            while not os.path.isfile(odtname): time.sleep(0.01)
             os.remove(fullname)
-            subprocess.Popen(['libreoffice','--convert-to','pdf','%s'%odtname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-            pdfname=os.path.join(path,parseFileName(filename)[0]+'.pdf')
+            subprocess.Popen(['libreoffice','--convert-to','pdf',odtname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).wait()
         elif end=='zip':
             manager=zipfile.ZipFile(os.path.join(path,filename))
             fullnames=manager.namelist()
