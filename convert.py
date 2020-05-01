@@ -43,12 +43,15 @@ def processFile(filename,path,getter=None,always=False):
         filename,end=rename(path,name,end)
         if end=='doc' or end=='docx':
             fullname=os.path.join(path,filename)
-            subprocess.Popen(['libreoffice','--convert-to','odt','%s'%fullname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            print("converting %s"%fullname)
+            a=subprocess.Popen(['libreoffice','--convert-to','odt','%s'%fullname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             odtname=os.path.join(path,parseFileName(filename)[0]+'.odt')
             while not os.path.isfile(odtname): time.sleep(0.01)
             os.remove(fullname)
+            print('converting %s'%odtname)
             subprocess.Popen(['libreoffice','--convert-to','pdf','%s'%odtname,'--outdir','%s'%path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             pdfname=os.path.join(path,parseFileName(filename)[0]+'.pdf')
+            print('this convert completed')
         elif end=='zip':
             manager=zipfile.ZipFile(os.path.join(path,filename))
             fullnames=manager.namelist()
@@ -63,15 +66,6 @@ if __name__=='__main__':
     import time
     import subprocess
     print("Please run wechatHelper.py")
-    path='/home/xu/School/Materials/2020-04-28/'
-    name='QR'
-    end='png'
-    fullname=os.path.join(path,name+'.'+end)
-    filename=name+'.'+end
-    filecmd=subprocess.Popen(['file','--extension','%s'%fullname],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    print(' '.join(['file','--extension','"%s"'%fullname]))
-    r=filecmd.stdout.read().decode()
-    guess=r.split(': ')[1].split('/')[0]
-    print(guess)
-    print(r)
-    print(fullname)
+    path="/home/xu/School/Materials/2020-04-30/大合集/"
+    name="4月30日.zip"
+    processFile(name,path)
