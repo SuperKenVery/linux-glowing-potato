@@ -1,4 +1,4 @@
-import pdb,threading,time,os,convert,datetime,termcolor
+import threading,time,termcolor
 loggingout=False
 def lessshow(msg):
     if isinstance(msg,list):
@@ -10,9 +10,9 @@ def lessshow(msg):
     else:
         msg=str(msg)
         cmd='echo "%s" | less'%msg.replace('"','\\"')
-        os.system(cmd)
+        core.os.system(cmd)
 def _stopNotify(t=None):
-    listen.mute=True
+    core.listen.mute=True
     if t:
         def start(st=t):
             time.sleep(int(st)*60)#in minutes
@@ -20,16 +20,16 @@ def _stopNotify(t=None):
         p=threading.Thread(target=start)
         p.start()
 def _startNotify():
-    listen.mute=False
+    core.listen.mute=False
 def _idlecls():
     print('\n'*40)
 def _exit():
     global loggingout
     loggingout=True
-    itchat.logout()
+    core.itchat.logout()
     exit()
 def _reconnect():
-    itchat.logout()
+    core.itchat.logout()
 def _history(history,every):
     if every==False:
         lessshow(str(history))
@@ -37,16 +37,18 @@ def _history(history,every):
         lessshow(history.printall)
     else:
         print("Unknown operation "+str(every))
-mo,c,m,e,p,ch,b,h,po,g,s,cl,mu,a,ps,it,pe="早读 语文 数学 英语 物理 化学 生物 历史 政治 地理 自习 班会 音乐 美术 心理 信息 体育".split(' ')
-t=datetime.time
-times=[(t(7,30),t(7,50)),(t(8,0),t(8,40)),(t(9,00),t(9,40)),(t(10,0),t(10,40)),(t(11,00),t(11,40)),(t(14,00),t(14,40)),(t(15,00),t(15,40)),(t(16,00),t(16,40)),(t(17,00),t(17,40))]
-lessons=[
-    [mo,e,ch,b,m,p,c,po,cl],
-    [mo,c,m,e,p,g,h,s,mu],
-    [mo,po,m,e,c,pe,ch,s,h],
-    [mo,g,c,e,p,b,m,a,ps],
-    [mo,e,m,ch,p,it,c,b,s]
-    ]
+def init_lessons():
+    global lessons,times
+    mo,c,m,e,p,ch,b,h,po,g,s,cl,mu,a,ps,it,pe="早读 语文 数学 英语 物理 化学 生物 历史 政治 地理 自习 班会 音乐 美术 心理 信息 体育".split(' ')
+    t=core.datetime.time
+    times=[(t(7,30),t(7,50)),(t(8,0),t(8,40)),(t(9,00),t(9,40)),(t(10,0),t(10,40)),(t(11,00),t(11,40)),(t(14,00),t(14,40)),(t(15,00),t(15,40)),(t(16,00),t(16,40)),(t(17,00),t(17,40))]
+    lessons=[
+        [mo,e,ch,b,m,p,c,po,cl],
+        [mo,c,m,e,p,g,h,s,mu],
+        [mo,po,m,e,c,pe,ch,s,h],
+        [mo,g,c,e,p,b,m,a,ps],
+        [mo,e,m,ch,p,it,c,b,s]
+        ]
 def which():
     '''
         tells you which lesson is it
@@ -59,7 +61,7 @@ def which():
 
         if not in class, then now it's the class' break.
     '''
-    now=datetime.datetime.now()
+    now=core.datetime.datetime.now()
     time,weekday=now.time(),now.weekday()
     if not weekday in [0,1,2,3,4]:#weekend
         return (0,-1,weekday)
@@ -89,29 +91,29 @@ def parseFilename(filename):
     return path,name
 def _process(*filenames):
     for filename in filenames:
-        if os.path.isdir(filename):
-            _process(*[os.path.join(filename,i) for i in os.listdir(filename)])
+        if core.os.path.isdir(filename):
+            _process(*[core.os.path.join(filename,i) for i in core.os.listdir(filename)])
         else:
             path,name=parseFilename(filename)
-            convert.processFile(filename,path)
+            core.convert.processFile(filename,path)
 def _send(*filenames):
     for filename in filenames:
-        if os.path.isdir(filename):
-            _send(*[os.path.join(filename,i) for i in os.listdir(filename)])
-        elif os.path.isfile(filename):
-            itchat.send_file(filename,toUserName='filehelper')
+        if core.os.path.isdir(filename):
+            _send(*[core.os.path.join(filename,i) for i in core.os.listdir(filename)])
+        elif core.os.path.isfile(filename):
+            core.itchat.send_file(filename,toUserName='filehelper')
         else:
-            itchat.send(filename,toUserName='filehelper')
+            core.itchat.send(filename,toUserName='filehelper')
 def _folder(*argv):
     if '--gui' in argv:
         if not '--all' in argv:
-            subprocess.Popen(['nautilus',wechatHelper.path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            core.subprocess.Popen(['nautilus',core.path],stdout=core.subprocess.DEVNULL,stderr=core.subprocess.DEVNULL)
         else:
-            for i in listen.allFolders:
-                if os.listdir(i)!=[]:
-                    subprocess.Popen(['nautilus',os.path.join(wechatHelper.path,i)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            for i in core.listen.allFolders:
+                if core.os.listdir(i)!=[]:
+                    core.subprocess.Popen(['nautilus',core.os.path.join(core.path,i)],stdout=core.subprocess.DEVNULL,stderr=core.subprocess.DEVNULL)
     else:
-        os.system("ranger")
+        core.os.system("ranger")
 def _allhomework(*argv):
     '''
         argv:
@@ -119,16 +121,16 @@ def _allhomework(*argv):
         gui     show homework in gui, otherwise in cli
         no-sr   no subject representative 
     '''
-    path=wechatHelper.path
+    path=core.path
     homework=''
     if '--edit' in argv:
-        for i in listen.allFolders:
-            name=os.path.join(path,i,'chat.txt')
-            os.system("gedit %s >> /dev/null &"%name)
+        for i in core.listen.allFolders:
+            name=core.os.path.join(path,i,'chat.txt')
+            core.os.system("gedit %s >> /dev/null &"%name)
     else:
-        for i in listen.allFolders:
-            recname=os.path.join(path,i,'chat.txt')
-            if os.path.isfile(recname):
+        for i in core.listen.allFolders:
+            recname=core.os.path.join(path,i,'chat.txt')
+            if core.os.path.isfile(recname):
                 with open(recname) as f:
                     homework+=i+':\n'+f.read()+'\n'
         if '--no-sr' in argv:
@@ -149,26 +151,24 @@ def _allhomework(*argv):
         else:
             with open("homework.txt",'w') as f:
                 f.write(homework)
-            os.system('xdg-open "homework.txt" >> /dev/null &')
+            core.os.system('xdg-open "homework.txt" >> /dev/null &')
 
 commands={
     'help': lambda:lessshow([str(i) for i in commands.keys()]),
     'send':_send,
     'folder':_folder,
-    'history':lambda every=False:_history(history,every),
-    'cls':lambda:os.system("clear"),
-    'clear':lambda:os.system("clear"),
+    'history':lambda every=False:_history(core.listen.history,every),
+    'cls':lambda:core.os.system("clear"),
+    'clear':lambda:core.os.system("clear"),
     'mute':_stopNotify,
     'dnd':_stopNotify,#do not disturb
     'ring':_startNotify,
     'unmute':_startNotify,
     'dndoff':_startNotify,
     'idlecls':_idlecls,
-    'lastGroup':lambda:print(lastGroup),
     'exit':_exit,
     'reconnect':_reconnect,
     'reboot':_reconnect,
-    'debug':pdb.set_trace,
     'process':_process,
     'table':_timeTable,
     'lessons':_timeTable,
@@ -202,9 +202,9 @@ def parse(cmd):
         
 def run(debug=False):            
     if not debug:
-        while itchat.loggedIn==False: time.sleep(0.01)
+        while core.itchat.loggedIn==False: time.sleep(0.01)
     time.sleep(0.01)
-    os.popen("clear")
+    core.os.popen("clear")
     x=termcolor.colored('>>>','green',attrs=['bold'])
     while True:
         try:
@@ -216,7 +216,7 @@ def run(debug=False):
         except TypeError as e:
             print("Argument Error. %s"%str(e))
         except KeyError:
-            ret=os.popen(user_input)
+            ret=core.os.popen(user_input)
             print(ret.read())
         except SystemExit:
             exit()
