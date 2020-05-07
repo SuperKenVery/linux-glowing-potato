@@ -205,7 +205,7 @@ def run(debug=False):
         while core.itchat.loggedIn==False: time.sleep(0.01)
     time.sleep(0.01)
     core.os.popen("clear")
-    x=termcolor.colored('>>>','green',attrs=['bold'])
+    x=termcolor.colored('➜ ','green',attrs=['bold'])
     while True:
         try:
             user_input=input(x)
