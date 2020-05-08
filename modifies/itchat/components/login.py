@@ -42,7 +42,7 @@ def login(self, enableCmdQR=False, picDir=None, qrCallback=None,
             qrStorage = io.BytesIO()
         else:
             while not self.get_QRuuid():
-                time.sleep(1)
+                time.sleep(0.1)
             qrStorage = self.get_QR(enableCmdQR=enableCmdQR,
                 picDir=picDir, qrCallback=qrCallback)
         isLoggedIn = False
@@ -60,6 +60,8 @@ def login(self, enableCmdQR=False, picDir=None, qrCallback=None,
         if isLoggedIn:
             break
         elif self.isLogging:
+            pass
+            #logger.info('Log in time out, reloading QR code.')
     else:
         return # log in process is stopped by user
     self.web_init()
@@ -276,6 +278,8 @@ def start_receiving(self, exitCallback=None, getReceivingFnOnly=False):
         if hasattr(exitCallback, '__call__'):
             exitCallback()
         else:
+            pass
+            #originally it would log something
     if getReceivingFnOnly:
         return maintain_loop
     else:
