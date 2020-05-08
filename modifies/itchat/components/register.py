@@ -83,7 +83,6 @@ def msg_register(self, msgType, isFriendChat=False, isGroupChat=False, isMpChat=
     return _msg_register
 
 def run(self, debug=False, blockThread=True):
-    logger.info('Start auto replying.')
     if debug:
         set_logging(loggingLevel=logging.DEBUG)
     def reply_fn():
@@ -94,8 +93,6 @@ def run(self, debug=False, blockThread=True):
             if self.useHotReload:
                 self.dump_login_status()
             self.alive = False
-            logger.debug('itchat received an ^C and exit.')
-            logger.info('Bye~')
     if blockThread:
         reply_fn()
     else:

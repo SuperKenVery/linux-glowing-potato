@@ -34,7 +34,6 @@ def load_login(core):
 def login(self, enableCmdQR=False, picDir=None, qrCallback=None,
         loginCallback=None, exitCallback=None):
     if self.alive or self.isLogging:
-        logger.warning('itchat has already logged in.')
         return
     self.isLogging = True
     while self.isLogging:
@@ -42,13 +41,10 @@ def login(self, enableCmdQR=False, picDir=None, qrCallback=None,
         if uuid:
             qrStorage = io.BytesIO()
         else:
-            logger.info('Getting uuid of QR code.')
             while not self.get_QRuuid():
                 time.sleep(1)
-            logger.info('Downloading QR code.')
             qrStorage = self.get_QR(enableCmdQR=enableCmdQR,
                 picDir=picDir, qrCallback=qrCallback)
-            logger.info('Please scan the QR code to log in.')
         isLoggedIn = False
         while not isLoggedIn:
             status = self.check_login()
@@ -58,17 +54,14 @@ def login(self, enableCmdQR=False, picDir=None, qrCallback=None,
                 isLoggedIn = True
             elif status == '201':
                 if isLoggedIn is not None:
-                    logger.info('Please press confirm on your phone.')
                     isLoggedIn = None
             elif status != '408':
                 break
         if isLoggedIn:
             break
         elif self.isLogging:
-            logger.info('Log in time out, reloading QR code.')
     else:
         return # log in process is stopped by user
-    logger.info('Loading the contact, this may take a little while.')
     self.web_init()
     self.show_mobile_login()
     self.get_contact(True)
@@ -78,7 +71,6 @@ def login(self, enableCmdQR=False, picDir=None, qrCallback=None,
         utils.clear_screen()
         if os.path.exists(picDir or config.DEFAULT_QR):
             os.remove(picDir or config.DEFAULT_QR)
-        logger.info('Login successfully as %s' % self.storageClass.nickName)
     self.start_receiving(exitCallback)
     self.isLogging = False
 
@@ -284,7 +276,6 @@ def start_receiving(self, exitCallback=None, getReceivingFnOnly=False):
         if hasattr(exitCallback, '__call__'):
             exitCallback()
         else:
-            logger.info('LOG OUT!')
     if getReceivingFnOnly:
         return maintain_loop
     else:
