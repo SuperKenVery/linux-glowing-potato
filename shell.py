@@ -191,7 +191,8 @@ class prompt:
     def run(self,os,subprocess):
         while True:
             print(self.msg,end='')
-            user_input=input()
+            try: user_input=input()
+            except KeyboardInterrupt: print("Type exit to exit. ")
             self.execute(user_input)
     def execute(self,user_input):
         try:
