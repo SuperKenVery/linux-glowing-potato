@@ -1,4 +1,3 @@
-import threading,time,termcolor
 loggingout=False
 def lessshow(msg):
     if isinstance(msg,list):
@@ -15,9 +14,9 @@ def _stopNotify(t=None):
     core.listen.mute=True
     if t:
         def start(st=t):
-            time.sleep(int(st)*60)#in minutes
+            core.time.sleep(int(st)*60)#in minutes
             _startNotify()
-        p=threading.Thread(target=start)
+        p=core.threading.Thread(target=start)
         p.start()
 def _startNotify():
     core.listen.mute=False
@@ -176,45 +175,32 @@ commands={
     'homework':_allhomework,
     '':nothing
     }
-def parse(cmd):
-    x=['']
-    inPara=False
-    direct=False
-    for i in cmd:
-        if direct:
-            x[-1]+=i
-            direct=not direct
-            continue
-        if i=='\\':
-            direct=True
-            continue
-        if i in ['"',"'"]:
-            inPara=not inPara
-            continue
-        if inPara:
-            x[-1]+=i
-        else:
-            if i==' ':
-                x.append('')
-            else:
-                x[-1]+=i
-    return x
-        
-def run(debug=False):            
-    if not debug:
-        while core.itchat.loggedIn==False: time.sleep(0.01)
-    time.sleep(0.01)
-    core.os.popen("clear")
-    x=termcolor.colored('➜ ','green',attrs=['bold'])
-    while True:
+class prompt:
+    def __init__(self,start=None,name=None,status=None):
+        self.start=start or core.termcolor.colored('➜','green',attrs=['bold'])
+        self.name=name or core.termcolor.colored('(WeChat Helper)','cyan',attrs=['bold'])
+        self.status=status or core.termcolor.colored('listening','green',attrs=['bold'])
+        self.generateMsg()
+        self.y=self.x=0
+    def generateMsg(self):
+        self.msg=self.start+' '+self.name+' '+self.status+' '
+    def updatePrompt(self):
+        print('\b'*len(self.msg),end='')
+        self.generateMsg()
+        print(self.msg,end='')
+    def run(self,os,subprocess):
+        while True:
+            print(self.msg,end='')
+            user_input=input()
+            self.execute(user_input)
+    def execute(self,user_input):
         try:
-            user_input=input(x)
-            c=parse(user_input.strip())
-            commands[c[0]](*c[1:])
+            parsed=self.parse(user_input.strip())
+            commands[parsed[0]](*parsed[1:])
         except KeyboardInterrupt:
-            print('Type "exit" to quit. (Doesn\'t work all the time)')
+            print('Cancled by user. ')
         except TypeError as e:
-            print("Argument Error. %s"%str(e))
+            print("Argument Error. \n%s"%str(e))
         except KeyError:
             ret=core.os.popen(user_input)
             print(ret.read())
@@ -222,8 +208,34 @@ def run(debug=False):
             exit()
         except BaseException as e:
             print("Unknown Error. ",str(e))
+    def parse(self,cmd):
+        x=['']
+        inPara=False
+        direct=False
+        for i in cmd:
+            if direct:
+                x[-1]+=i
+                direct=not direct
+                continue
+            if i=='\\':
+                direct=True
+                continue
+            if i in ['"',"'"]:
+                inPara=not inPara
+                continue
+            if inPara:
+                x[-1]+=i
+            else:
+                if i==' ':
+                    x.append('')
+                else:
+                    x[-1]+=i
+        return x
 
-
+def run():
+    global inputprompt
+    inputprompt=prompt(status=core.termcolor.colored('waiting for login','magenta',attrs=['dark','bold']))
+    inputprompt.run(core.os,core.subprocess)
 if __name__=='__main__':
     print("Please run wechatHelper.py")
     lessshow('''

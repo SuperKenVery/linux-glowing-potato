@@ -3,12 +3,15 @@ import sys
 class Core:
     '''An object to transfer data between py files'''
     def __init__(self,argv=[]): #argv:sys.argv[1:]
-        import itchat,os,sys,datetime,subprocess
+        import itchat,os,sys,datetime,subprocess,termcolor,time,threading
         self.itchat     =itchat
         self.os         =os
         self.sys        =sys
         self.datetime   =datetime
         self.subprocess =subprocess
+        self.termcolor  =termcolor
+        self.time       =time
+        self.threading  =threading
         inFolder=os.path.expanduser('~/School/Materials/')
         today=datetime.date.today()
         if len(argv)==0:

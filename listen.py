@@ -1,4 +1,4 @@
-import time,threading,re
+import re
 class classroom:
     c,m,e,p,ch,h,b,g,po,pe='语文 数学 英语 物理 化学 历史 生物 地理 政治 体育'.split(' ')
     teachers={'乔战胜':b,
@@ -40,7 +40,8 @@ def notify(title,body=''):
     core.os.system('notify-send -a "WeChat Helper" "%s" "%s"'%(title,body))
 
 def initmodule():
-    global history,mute,allFolders,emojiFilter
+    global history,mute,allFolders,emojiFilter,listenThread
+    listenThread=core.threading.Thread(target=listen)
     history=chatHistory()
     mute=False
     allFolders=set(classroom.teachers.values())|set(classroom.sr.values())
@@ -125,9 +126,14 @@ def register():
 
 def listen():
     def setLoggedIn():
-        core.itchat.loggedIn=True
+        p=core.shell.inputprompt
+        p.status=core.termcolor.colored('listening','green',attrs=['bold'])
+        p.updatePrompt()
     def exitcallback():
         core.itchat.logout()
+        p=core.shell.inputprompt
+        p.status=core.termcolor.colored('re-logging in','magenta',attrs=['dark','bold'])
+        p.updatePrompt()
     while not core.shell.loggingout:
         core.itchat.auto_login(hotReload=True,
                         enableCmdQR=False,
@@ -135,10 +141,12 @@ def listen():
                         loginCallback=setLoggedIn,
                         exitCallback=exitcallback
                         )
+        import logging 
+        itchatlogger=logging.getLogger('itchat')
+        itchatlogger.setLevel(50)
         core.itchat.run()
 
     
-listenThread=threading.Thread(target=listen)
 def start():
     listenThread.start()
 
