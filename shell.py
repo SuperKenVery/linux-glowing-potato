@@ -185,15 +185,23 @@ class prompt:
     def generateMsg(self):
         self.msg=self.start+' '+self.name+' '+self.status+' '
     def updatePrompt(self):
-        print('\b'*len(self.msg),end='')
+        print('\b'*len(self.msg),end='',flush=True)
+        oriLength=len(self.msg)
         self.generateMsg()
-        print(self.msg,end='')
+        print(self.msg,end='',flush=True)
+        lendiff=len(self.msg)-oriLength
+        if lendiff<0: 
+            print('i'*lendiff,flush=True,end='')
+            print('\b'*lendiff,flush=True,end='')
+            print(' '*lendiff,flush=True,end='')
+            print('\b'*lendiff,flush=True,end='')
     def run(self,os,subprocess):
         while True:
-            print(self.msg,end='')
-            try: user_input=input()
+            print(self.msg,end='',flush=True)
+            try: 
+                user_input=input()
+                self.execute(user_input)
             except KeyboardInterrupt: print("Type exit to exit. ")
-            self.execute(user_input)
     def execute(self,user_input):
         try:
             parsed=self.parse(user_input.strip())
