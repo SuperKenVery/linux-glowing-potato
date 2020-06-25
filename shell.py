@@ -191,8 +191,7 @@ class prompt:
         print(self.msg,end='',flush=True)
         lendiff=len(self.msg)-oriLength
         if lendiff<0: 
-            print('i'*lendiff,flush=True,end='')
-            print('\b'*lendiff,flush=True,end='')
+            lendiff=-lendiff
             print(' '*lendiff,flush=True,end='')
             print('\b'*lendiff,flush=True,end='')
     def run(self,os,subprocess):
