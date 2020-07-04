@@ -97,5 +97,5 @@ def run(self, debug=False, blockThread=True):
         reply_fn()
     else:
         replyThread = threading.Thread(target=reply_fn)
-        replyThread.setDaemon(True)
+        replyThread.daemon=True
         replyThread.start()

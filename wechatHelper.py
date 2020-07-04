@@ -3,7 +3,12 @@ import sys
 class Core:
     '''An object to transfer data between py files'''
     def __init__(self,argv=[]): #argv:sys.argv[1:]
-        import itchat,os,sys,datetime,subprocess,termcolor,time,threading
+        try:
+            import itchat,os,sys,datetime,subprocess,termcolor,time,threading
+        except ModuleNotFoundError:
+            print('''In order to run this, you'll need to have some module installed.
+Required modules:
+    itchat,termcolor''')
         self.itchat     =itchat
         self.os         =os
         self.sys        =sys
@@ -14,6 +19,11 @@ class Core:
         self.threading  =threading
         inFolder=os.path.expanduser('~/School/Materials/')
         today=datetime.date.today()
+        if '--clean' in argv:
+            argv.remove('--clean')
+            pkl=os.path.join(inFolder,'itchat.pkl')
+            if os.path.isfile(pkl):
+                os.remove(pkl)
         if len(argv)==0:
             toweek=today.weekday()
             if toweek in [5,6]:#Saturday, Sunday. Weekday is 0-based. 
@@ -27,7 +37,6 @@ class Core:
                         m+=12
                 today=datetime.date(y,m,d)
         else:
-            assert len(argv)<=3
             year,month,day=today.year,today.month,today.day
             day=int(argv[-1])
             if len(argv)>=2: month=int(argv[-2])
@@ -37,8 +46,10 @@ class Core:
         self.path=os.path.join(sys.path[0],inFolder,todayFolder)
 
 
+
 if __name__=='__main__':
-    import shell,convert,listen
+    import shell,convert,listen,sys,os
+
 
     core=Core(sys.argv[1:])
     if not core.os.path.isdir(core.path):

@@ -42,6 +42,7 @@ def notify(title,body=''):
 def initmodule():
     global history,mute,allFolders,emojiFilter,listenThread
     listenThread=core.threading.Thread(target=listen)
+    listenThread.daemon=True
     history=chatHistory()
     mute=False
     allFolders=set(classroom.teachers.values())|set(classroom.sr.values())
@@ -130,10 +131,11 @@ def listen():
         p.status=core.termcolor.colored('listening','green',attrs=['bold'])
         p.updatePrompt()
     def exitcallback():
-        core.itchat.logout()
-        p=core.shell.inputprompt
-        p.status=core.termcolor.colored('re-logging in','magenta',attrs=['dark','bold'])
-        p.updatePrompt()
+        if not core.shell.loggingout:
+            core.itchat.logout()
+            p=core.shell.inputprompt
+            p.status=core.termcolor.colored('re-logging in','magenta',attrs=['dark','bold'])
+            p.updatePrompt()
     while not core.shell.loggingout:
         core.itchat.auto_login(hotReload=True,
                         enableCmdQR=False,
