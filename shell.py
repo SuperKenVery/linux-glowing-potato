@@ -178,7 +178,7 @@ commands={
 class prompt:
     def __init__(self,start=None,name=None,status=None):
         self.start=start or core.termcolor.colored('➜','green',attrs=['bold'])
-        self.name=name or core.termcolor.colored('(WeChat Helper)','cyan',attrs=['bold'])
+        self.name=name or core.termcolor.colored('(OC Helper)','cyan',attrs=['bold'])
         self.status=status or core.termcolor.colored('listening','green',attrs=['bold'])
         self.generateMsg()
         self.y=self.x=0
@@ -245,7 +245,7 @@ def run():
     inputprompt=prompt(status=core.termcolor.colored('waiting for login','magenta',attrs=['dark','bold']))
     inputprompt.run(core.os,core.subprocess)
 if __name__=='__main__':
-    print("Please run wechatHelper.py")
+    print("Please run ocHelper.py")
     lessshow('''
         A long text ' to " test less\\ show
     ''')

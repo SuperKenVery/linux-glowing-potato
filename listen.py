@@ -153,4 +153,4 @@ def start():
     listenThread.start()
 
 if __name__=='__main__':
-    print("Please run wechatHelper.py")
+    print("Please run ocHelper.py")

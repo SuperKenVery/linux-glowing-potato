@@ -60,7 +60,7 @@ if __name__=='__main__':
     from listen import notify
     import time
     import subprocess
-    print("Please run wechatHelper.py")
+    print("Please run ocHelper.py")
     path="/home/xu/School/Materials/2020-04-30/大合集/"
     name="4月30日.zip"
     processFile(name,path)
