@@ -32,7 +32,7 @@ def _reconnect():
 def _history(history,every):
     if every==False:
         lessshow(str(history))
-    elif every=='all':
+    elif every=='--all':
         lessshow(history.printall)
     else:
         print("Unknown operation "+str(every))
